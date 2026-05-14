@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyLearn — Python Documentation & Learning Hub</title>
+<meta name="description" content="Learn Python from beginner to advanced. Clear explanations, real examples, and a modern learning experience.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+============================================================ */
+:root {
+  --bg-primary: #0d0f14;
+  --bg-secondary: #13161d;
+  --bg-card: #191d27;
+  --bg-hover: #1f2433;
+  --border: #252b3b;
+  --border-light: #2e3650;
+  --accent: #4f9cf9;
+  --accent-2: #a78bfa;
+  --accent-3: #34d399;
+  --accent-warn: #fb923c;
+  --accent-danger: #f87171;
+  --text-primary: #e8eaf0;
+  --text-secondary: #8892a4;
+  --text-muted: #5a6478;
+  --code-bg: #0a0c10;
+  --sidebar-w: 280px;
+  --topbar-h: 60px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --transition: 0.2s ease;
+  --font-body: 'Lora', Georgia, serif;
+  --font-heading: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f6f9;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-hover: #eef0f6;
+  --border: #dde1ec;
+  --border-light: #c8cee0;
+  --text-primary: #1a1f2e;
+  --text-secondary: #4a5568;
+  --text-muted: #8892a4;
+  --code-bg: #1a1f2e;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  z-index: 9999;
+  transition: width 0.1s;
+}
+
+/* ============================================================
+   TOPBAR / NAVBAR
+============================================================ */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--topbar-h);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  gap: 1rem;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.topbar-search {
+  flex: 1;
+  max-width: 420px;
+  position: relative;
+}
+.topbar-search input {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 0.45rem 1rem 0.45rem 2.5rem;
+  border-radius: 8px;
+  outline: none;
+  transition: border var(--transition);
+}
+.topbar-search input:focus { border-color: var(--accent); }
+.topbar-search .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-icon {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all var(--transition);
+}
+.btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1.1rem;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity var(--transition);
+  text-decoration: none;
+}
+.btn-primary:hover { opacity: 0.85; }
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+}
+
+/* ============================================================
+   LAYOUT — SIDEBAR + CONTENT
+============================================================ */
+.layout {
+  display: flex;
+  padding-top: var(--topbar-h);
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  padding: 1.25rem 0;
+  transition: transform var(--transition);
+  z-index: 500;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.sidebar-section { margin-bottom: 0.25rem; }
+.sidebar-label {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0.75rem 1.25rem 0.35rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.42rem 1.25rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-size: 0.87rem;
+  font-weight: 600;
+  border-left: 3px solid transparent;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+.sidebar-link:hover { color: var(--text-primary); background: var(--bg-hover); }
+.sidebar-link.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: rgba(79,156,249,0.07);
+}
+.sidebar-link .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+.sidebar-link.active .dot,
+.sidebar-link:hover .dot { background: var(--accent); }
+
+/* Collapsible section */
+.sidebar-group-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.42rem 1.25rem;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: 0.87rem;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--transition);
+}
+.sidebar-group-toggle:hover { color: var(--text-primary); }
+.sidebar-group-toggle .chevron {
+  font-size: 0.65rem;
+  transition: transform 0.2s;
+}
+.sidebar-group-toggle.open .chevron { transform: rotate(90deg); }
+.sidebar-group-body { display: none; padding-left: 0.75rem; }
+.sidebar-group-body.open { display: block; }
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  min-width: 0;
+}
+
+/* TOC (right side) */
+.toc-sidebar {
+  width: 220px;
+  position: sticky;
+  top: calc(var(--topbar-h) + 2rem);
+  align-self: flex-start;
+  flex-shrink: 0;
+  padding: 0 1.5rem 0 0;
+  display: none;
+}
+@media (min-width: 1200px) { .toc-sidebar { display: block; } }
+
+.toc-title {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+.toc-link {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.3rem 0 0.3rem 0.75rem;
+  border-left: 2px solid var(--border);
+  transition: all var(--transition);
+  margin-bottom: 0.1rem;
+}
+.toc-link:hover, .toc-link.active { color: var(--accent); border-left-color: var(--accent); }
+
+/* ============================================================
+   HOMEPAGE
+============================================================ */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Hero */
+.hero {
+  padding: 5rem 3rem 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(79,156,249,0.12);
+  border: 1px solid rgba(79,156,249,0.3);
+  color: var(--accent);
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 1.25rem;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.75;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-hero-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 2rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity var(--transition), transform var(--transition);
+}
+.btn-hero-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+.btn-hero-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 0.8rem 2rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition);
+}
+.btn-hero-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Code preview in hero */
+.hero-code-preview {
+  margin: 3rem auto 0;
+  max-width: 560px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-align: left;
+  box-shadow: var(--shadow), 0 0 60px rgba(79,156,249,0.08);
+}
+
+.code-window-bar {
+  background: var(--bg-hover);
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.dot-red { width:10px;height:10px;border-radius:50%;background:#f87171; }
+.dot-yellow { width:10px;height:10px;border-radius:50%;background:#fbbf24; }
+.dot-green { width:10px;height:10px;border-radius:50%;background:#34d399; }
+.code-window-title {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.code-window-body {
+  padding: 1.25rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.9;
+  color: #abb2bf;
+}
+.code-window-body .kw { color: #c678dd; }
+.code-window-body .fn { color: #61afef; }
+.code-window-body .str { color: #98c379; }
+.code-window-body .num { color: #d19a66; }
+.code-window-body .cm { color: #5c6370; font-style: italic; }
+.code-window-body .cls { color: #e5c07b; }
+
+/* Sections */
+.section { padding: 4rem 3rem; max-width: 1100px; margin: 0 auto; }
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.section-header h2 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.75rem;
+}
+.section-header p {
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Why Python grid */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+.why-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  transition: border-color var(--transition), transform var(--transition);
+}
+.why-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.why-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+.why-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.why-card p { font-size: 0.9rem; color: var(--text-secondary); }
+
+/* Roadmap */
+.roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.roadmap-step {
+  display: flex;
+  gap: 1.25rem;
+  position: relative;
+}
+.roadmap-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 44px;
+  bottom: -1px;
+  width: 2px;
+  background: var(--border);
+}
+.roadmap-marker {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.roadmap-body {
+  flex: 1;
+  padding-bottom: 2rem;
+}
+.roadmap-body h3 {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.roadmap-body p { font-size: 0.9rem; color: var(--text-secondary); }
+.roadmap-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+/* Topics grid */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.topic-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  color: var(--text-primary);
+  display: block;
+}
+.topic-card:hover { border-color: var(--accent); background: var(--bg-hover); transform: translateY(-2px); }
+.topic-card-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+.topic-card h4 {
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+.topic-card p { font-size: 0.8rem; color: var(--text-secondary); }
+
+/* Stats strip */
+.stats-strip {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 2.5rem 3rem;
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+.stat { text-align: center; }
+.stat-num {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   DOCS PAGE
+============================================================ */
+.docs-page-inner {
+  display: flex;
+  gap: 2.5rem;
+  padding: 2.5rem 2.5rem 5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.docs-content { flex: 1; min-width: 0; }
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+.breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color var(--transition); }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--text-secondary); }
+
+/* Doc heading styles */
+.docs-content h1 {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  margin-bottom: 0.75rem;
+}
+.docs-content h2 {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  scroll-margin-top: calc(var(--topbar-h) + 1.5rem);
+}
+.docs-content h3 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 1.75rem 0 0.75rem;
+  color: var(--accent);
+  scroll-margin-top: calc(var(--topbar-h) + 1.5rem);
+}
+.docs-content p { margin-bottom: 1.1rem; color: var(--text-primary); font-size: 0.98rem; }
+.docs-content ul, .docs-content ol {
+  margin: 0.75rem 0 1.25rem 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.docs-content li { margin-bottom: 0.4rem; }
+.docs-content strong { color: var(--text-primary); font-weight: 600; }
+.docs-content code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  color: var(--accent-2);
+}
+
+/* Doc meta row */
+.doc-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.doc-badge {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+}
+.badge-beginner { background: rgba(52,211,153,0.12); color: var(--accent-3); border: 1px solid rgba(52,211,153,0.3); }
+.badge-intermediate { background: rgba(251,146,60,0.12); color: var(--accent-warn); border: 1px solid rgba(251,146,60,0.3); }
+.doc-readtime { font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; }
+
+/* Code blocks */
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 1.25rem 0;
+}
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--bg-hover);
+  border-bottom: 1px solid var(--border);
+}
+.code-lang {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.copy-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: var(--accent-3); color: var(--accent-3); }
+
+.code-block pre {
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.85;
+  color: #abb2bf;
+  margin: 0;
+}
+.code-block pre::-webkit-scrollbar { height: 4px; }
+.code-block pre::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+/* Syntax colors */
+.kw { color: #c678dd; }
+.fn { color: #61afef; }
+.str { color: #98c379; }
+.num { color: #d19a66; }
+.cm { color: #5c6370; font-style: italic; }
+.cls { color: #e5c07b; }
+.op { color: #56b6c2; }
+.punc { color: #abb2bf; }
+
+/* Output block */
+.output-block {
+  background: #0a0f05;
+  border: 1px solid rgba(52,211,153,0.2);
+  border-left: 3px solid var(--accent-3);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: #86efac;
+  line-height: 1.8;
+}
+.output-label {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-3);
+  margin-bottom: 0.5rem;
+}
+
+/* Callout cards */
+.callout {
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.35rem;
+  margin: 1.25rem 0;
+  display: flex;
+  gap: 1rem;
+  border: 1px solid;
+}
+.callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+.callout-body p { margin: 0; font-size: 0.9rem; }
+.callout-body strong { display: block; font-family: var(--font-heading); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem; }
+
+.callout.note { background: rgba(79,156,249,0.07); border-color: rgba(79,156,249,0.25); color: var(--text-primary); }
+.callout.note .callout-body strong { color: var(--accent); }
+.callout.tip { background: rgba(52,211,153,0.07); border-color: rgba(52,211,153,0.25); }
+.callout.tip .callout-body strong { color: var(--accent-3); }
+.callout.warning { background: rgba(251,146,60,0.07); border-color: rgba(251,146,60,0.25); }
+.callout.warning .callout-body strong { color: var(--accent-warn); }
+.callout.danger { background: rgba(248,113,113,0.07); border-color: rgba(248,113,113,0.25); }
+.callout.danger .callout-body strong { color: var(--accent-danger); }
+
+/* Syntax table */
+.syntax-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.88rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.syntax-table th {
+  background: var(--bg-hover);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+.syntax-table td {
+  padding: 0.65rem 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.syntax-table td code { font-family: var(--font-mono); font-size: 0.82em; color: var(--accent-2); }
+.syntax-table tr:hover td { background: var(--bg-hover); }
+
+/* Nav buttons (prev/next) */
+.doc-nav {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.doc-nav-btn {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.35rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  color: var(--text-primary);
+  display: block;
+}
+.doc-nav-btn:hover { border-color: var(--accent); background: var(--bg-hover); }
+.doc-nav-btn.prev { text-align: left; }
+.doc-nav-btn.next { text-align: right; }
+.doc-nav-direction {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.doc-nav-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Search results dropdown */
+.search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 2000;
+  display: none;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.search-results.visible { display: block; }
+.search-result-item {
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: var(--bg-hover); }
+.search-result-item .sr-title {
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+.search-result-item .sr-path {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-logo {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.footer p { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.footer-links a { color: var(--text-muted); text-decoration: none; transition: color var(--transition); }
+.footer-links a:hover { color: var(--accent); }
+
+/* Back to top */
+#back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  width: 40px; height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all var(--transition);
+  z-index: 500;
+  font-size: 1rem;
+}
+#back-to-top.visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   MOBILE RESPONSIVE
+============================================================ */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 600;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .menu-toggle { display: flex; }
+  .topbar-search { display: none; }
+  .docs-page-inner { padding: 1.5rem; }
+  .section { padding: 3rem 1.5rem; }
+  .hero { padding: 3.5rem 1.5rem 3rem; }
+  .stats-strip { gap: 2rem; padding: 2rem 1.5rem; }
+}
+@media (max-width: 600px) {
+  .hero h1 { font-size: 2rem; }
+  .topics-grid { grid-template-columns: 1fr 1fr; }
+  .footer { flex-direction: column; text-align: center; }
+  .doc-nav { flex-direction: column; }
+}
+
+/* Sidebar overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 550;
+}
+.sidebar-overlay.visible { display: block; }
+
+/* ============================================================
+   SEARCH HIGHLIGHT
+============================================================ */
+mark {
+  background: rgba(251,146,60,0.3);
+  color: var(--accent-warn);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-in { animation: fadeInUp 0.45s ease both; }
+.anim-in-delay-1 { animation-delay: 0.1s; }
+.anim-in-delay-2 { animation-delay: 0.2s; }
+.anim-in-delay-3 { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <button class="menu-toggle btn-icon" id="menu-toggle" aria-label="Toggle menu">☰</button>
+  <a href="#" class="logo" onclick="showPage('home');return false;">🐍 PyLearn</a>
+  <div class="topbar-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search topics, functions, examples…" autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn-icon" id="theme-toggle" title="Toggle theme">☀️</button>
+    <a href="#" class="btn-primary" onclick="showPage('variables');return false;">Get Started →</a>
+  </div>
+</header>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Getting Started</div>
+      <a class="sidebar-link" onclick="showPage('home')" href="#">
+        <span class="dot"></span>Home
+      </a>
+      <a class="sidebar-link" onclick="showPage('intro')" href="#">
+        <span class="dot"></span>Introduction
+      </a>
+      <a class="sidebar-link" onclick="showPage('variables')" href="#">
+        <span class="dot"></span>Variables
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group-toggle" onclick="toggleGroup(this)">
+        Core Concepts <span class="chevron">▶</span>
+      </div>
+      <div class="sidebar-group-body open">
+        <a class="sidebar-link" onclick="showPage('datatypes')" href="#">
+          <span class="dot"></span>Data Types
+        </a>
+        <a class="sidebar-link" onclick="showPage('operators')" href="#">
+          <span class="dot"></span>Operators
+        </a>
+        <a class="sidebar-link" onclick="showPage('conditions')" href="#">
+          <span class="dot"></span>Conditions
+        </a>
+        <a class="sidebar-link" onclick="showPage('loops')" href="#">
+          <span class="dot"></span>Loops
+        </a>
+        <a class="sidebar-link" onclick="showPage('functions')" href="#">
+          <span class="dot"></span>Functions
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group-toggle" onclick="toggleGroup(this)">
+        Intermediate <span class="chevron">▶</span>
+      </div>
+      <div class="sidebar-group-body open">
+        <a class="sidebar-link" onclick="showPage('oop')" href="#">
+          <span class="dot"></span>OOP
+        </a>
+        <a class="sidebar-link" onclick="showPage('files')" href="#">
+          <span class="dot"></span>File Handling
+        </a>
+        <a class="sidebar-link" onclick="showPage('exceptions')" href="#">
+          <span class="dot"></span>Exception Handling
+        </a>
+        <a class="sidebar-link" onclick="showPage('modules')" href="#">
+          <span class="dot"></span>Modules & Packages
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group-toggle" onclick="toggleGroup(this)">
+        Advanced <span class="chevron">▶</span>
+      </div>
+      <div class="sidebar-group-body">
+        <a class="sidebar-link" onclick="showPage('advanced')" href="#">
+          <span class="dot"></span>Advanced Python
+        </a>
+        <a class="sidebar-link" href="#">
+          <span class="dot"></span>APIs &amp; HTTP
+        </a>
+        <a class="sidebar-link" href="#">
+          <span class="dot"></span>Django Basics
+        </a>
+        <a class="sidebar-link" href="#">
+          <span class="dot"></span>AI with Python
+        </a>
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="main-content">
+
+    <!-- ================================================
+         HOME PAGE
+    ================================================ -->
+    <div class="page active" id="page-home">
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-badge anim-in">✦ Free & Open Source</div>
+        <h1 class="anim-in anim-in-delay-1">Learn <em>Python</em>,<br>Build Anything.</h1>
+        <p class="anim-in anim-in-delay-2">From your first variable to full-stack applications and AI — clear explanations, real examples, and a learning path built for humans.</p>
+        <div class="hero-actions anim-in anim-in-delay-3">
+          <a href="#" class="btn-hero-primary" onclick="showPage('intro');return false;">Start Learning →</a>
+          <a href="#" class="btn-hero-secondary" onclick="showPage('variables');return false;">📖 Browse Docs</a>
+        </div>
+        <div class="hero-code-preview anim-in anim-in-delay-3">
+          <div class="code-window-bar">
+            <div class="dot-red"></div><div class="dot-yellow"></div><div class="dot-green"></div>
+            <span class="code-window-title">hello_world.py</span>
+          </div>
+          <div class="code-window-body">
+            <span class="cm"># Your first Python program</span><br>
+            <span class="kw">def</span> <span class="fn">greet</span>(name):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="str">f"Hello, {name}! Welcome to Python 🐍"</span><br><br>
+            message = <span class="fn">greet</span>(<span class="str">"World"</span>)<br>
+            <span class="fn">print</span>(message)<br><br>
+            <span class="cm"># Output: Hello, World! Welcome to Python 🐍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-strip">
+        <div class="stat">
+          <span class="stat-num">16+</span>
+          <span class="stat-label">Topics Covered</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">100+</span>
+          <span class="stat-label">Code Examples</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">0</span>
+          <span class="stat-label">Prerequisites</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Free Forever</span>
+        </div>
+      </div>
+
+      <!-- Why Python -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Why learn Python?</h2>
+          <p>Python is one of the most popular and versatile programming languages in the world.</p>
+        </div>
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-icon" style="background:rgba(79,156,249,0.12);">📖</div>
+            <h3>Easy to Read</h3>
+            <p>Python reads almost like plain English, making it ideal for beginners and experienced developers alike.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon" style="background:rgba(167,139,250,0.12);">⚡</div>
+            <h3>Incredibly Versatile</h3>
+            <p>Web development, data science, AI/ML, automation, scripting — Python does it all.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon" style="background:rgba(52,211,153,0.12);">🌍</div>
+            <h3>Huge Ecosystem</h3>
+            <p>Thousands of libraries and a massive global community mean you're never stuck alone.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon" style="background:rgba(251,146,60,0.12);">💼</div>
+            <h3>High Demand</h3>
+            <p>Python developers are among the most sought-after professionals in the tech industry.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon" style="background:rgba(248,113,113,0.12);">🚀</div>
+            <h3>Fast to Build</h3>
+            <p>Go from idea to working prototype faster than almost any other language.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon" style="background:rgba(56,189,248,0.12);">🤖</div>
+            <h3>Powers AI</h3>
+            <p>Python is the language of machine learning and AI, with libraries like TensorFlow and PyTorch.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Roadmap -->
+      <div class="section" style="background: var(--bg-card); border-radius: var(--radius-lg);">
+        <div class="section-header">
+          <h2>Your Learning Roadmap</h2>
+          <p>A structured path from absolute beginner to confident Python developer.</p>
+        </div>
+        <div class="roadmap">
+          <div class="roadmap-step">
+            <div class="roadmap-marker" style="background:rgba(79,156,249,0.15);color:var(--accent);">01</div>
+            <div class="roadmap-body">
+              <h3>The Foundations</h3>
+              <p>Understand how Python works, set up your environment, and write your first program.</p>
+              <div class="roadmap-tags">
+                <span class="tag">Introduction</span>
+                <span class="tag">Variables</span>
+                <span class="tag">Data Types</span>
+                <span class="tag">Operators</span>
+              </div>
+            </div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-marker" style="background:rgba(167,139,250,0.15);color:var(--accent-2);">02</div>
+            <div class="roadmap-body">
+              <h3>Control Flow</h3>
+              <p>Learn how to make decisions and repeat actions in your programs.</p>
+              <div class="roadmap-tags">
+                <span class="tag">Conditions</span>
+                <span class="tag">Loops</span>
+                <span class="tag">Functions</span>
+              </div>
+            </div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-marker" style="background:rgba(52,211,153,0.15);color:var(--accent-3);">03</div>
+            <div class="roadmap-body">
+              <h3>Intermediate Skills</h3>
+              <p>Work with files, handle errors gracefully, and organize code into reusable modules.</p>
+              <div class="roadmap-tags">
+                <span class="tag">OOP</span>
+                <span class="tag">Files</span>
+                <span class="tag">Exceptions</span>
+                <span class="tag">Modules</span>
+              </div>
+            </div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-marker" style="background:rgba(251,146,60,0.15);color:var(--accent-warn);">04</div>
+            <div class="roadmap-body">
+              <h3>Advanced Python</h3>
+              <p>Decorators, generators, async programming, and performance optimization.</p>
+              <div class="roadmap-tags">
+                <span class="tag">Decorators</span>
+                <span class="tag">Generators</span>
+                <span class="tag">Async</span>
+              </div>
+            </div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-marker" style="background:rgba(248,113,113,0.15);color:var(--accent-danger);">05</div>
+            <div class="roadmap-body" style="padding-bottom:0;">
+              <h3>Real-World Applications</h3>
+              <p>Build APIs, web apps, and AI-powered projects with modern frameworks and libraries.</p>
+              <div class="roadmap-tags">
+                <span class="tag">APIs</span>
+                <span class="tag">Django</span>
+                <span class="tag">AI / ML</span>
+                <span class="tag">Automation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topics grid -->
+      <div class="section">
+        <div class="section-header">
+          <h2>All Topics</h2>
+          <p>Jump into any topic — each page has examples, explanations, and best practices.</p>
+        </div>
+        <div class="topics-grid">
+          <a class="topic-card" href="#" onclick="showPage('intro');return false;">
+            <span class="topic-card-icon">🐍</span>
+            <h4>Introduction</h4>
+            <p>What Python is and why it matters</p>
+          </a>
+          <a class="topic-card" href="#" onclick="showPage('variables');return false;">
+            <span class="topic-card-icon">📦</span>
+            <h4>Variables</h4>
+            <p>Storing and naming data</p>
+          </a>
+          <a class="topic-card" href="#" onclick="showPage('datatypes');return false;">
+            <span class="topic-card-icon">🔢</span>
+            <h4>Data Types</h4>
+            <p>Strings, numbers, lists, and more</p>
+          </a>
+          <a class="topic-card" href="#" onclick="showPage('operators');return false;">
+            <span class="topic-card-icon">➕</span>
+            <h4>Operators</h4>
+            <p>Arithmetic, comparison, logical</p>
+          </a>
+          <a class="topic-card" href="#" onclick="showPage('conditions');return false;">
+            <span class="topic-card-icon">🔀</span>
+            <h4>Conditions</h4>
+            <p>if / elif / else logic</p>
+          </a>
+          <a class="topic-card" href="#" onclick="showPage('loops');return false;">
+            <span class="topic-card-icon">🔁</span>
+            <h4>Loops</h4>
+            <p>for loops, while loops, iteration</p>
+          </a>
+          <a class="topic-card" href="#" onclick="showPage('functions');return false;">
+            <span class="topic-card-icon">⚙️</span>
+            <h4>Functions</h4>
+            <p>Defining and calling functions</p>
+          </a>
+          <a class="topic-card" href="#" onclick="showPage('oop');return false;">
+            <span class="topic-card-icon">🏗️</span>
+            <h4>OOP</h4>
+            <p>Classes, objects, inheritance</p>
+          </a>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div>
+          <div class="footer-logo">🐍 PyLearn</div>
+          <p style="margin-top:0.35rem;">An open-source Python learning platform.</p>
+        </div>
+        <div class="footer-links">
+          <a href="#">GitHub</a>
+          <a href="#">Contribute</a>
+          <a href="#">License</a>
+        </div>
+        <p>Built with ❤️ for learners everywhere</p>
+      </footer>
+    </div><!-- /home page -->
+
+
+    <!-- ================================================
+         INTRO PAGE
+    ================================================ -->
+    <div class="page" id="page-intro">
+      <div class="docs-page-inner">
+        <article class="docs-content">
+          <div class="breadcrumb">
+            <a href="#" onclick="showPage('home');return false;">Home</a> ›
+            <span>Getting Started</span> ›
+            <span>Introduction</span>
+          </div>
+          <h1>Introduction to Python</h1>
+          <div class="doc-meta">
+            <span class="doc-badge badge-beginner">Beginner</span>
+            <span class="doc-readtime">⏱ ~5 min read</span>
+          </div>
+
+          <p>Python is a high-level, interpreted programming language created by Guido van Rossum and released in 1991. It emphasizes code readability and simplicity, which makes it one of the most beginner-friendly languages available today — while also being powerful enough to drive cutting-edge applications.</p>
+
+          <h2 id="what-is-python">What is Python?</h2>
+          <p>At its core, Python is a tool for telling computers what to do. Unlike lower-level languages, Python code looks almost like plain English, which means you can focus on <em>solving problems</em> rather than fighting with syntax.</p>
+
+          <div class="callout note">
+            <span class="callout-icon">ℹ️</span>
+            <div class="callout-body">
+              <strong>Note</strong>
+              <p>Python is an <strong>interpreted</strong> language — code runs line by line, making it easy to test and debug interactively.</p>
+            </div>
+          </div>
+
+          <h2 id="why-python">Why choose Python?</h2>
+          <p>Python's philosophy can be summed up in a few ideas: code should be readable, simple should beat complex, and practical problems deserve practical solutions. These ideas made Python the #1 language in fields like data science, AI, web development, and automation.</p>
+
+          <h2 id="your-first-program">Your First Program</h2>
+          <p>Let's start with the classic first program. In Python, printing text to the screen is just one line:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><span class="fn">print</span>(<span class="str">"Hello, World!"</span>)</pre>
+          </div>
+          <div class="output-block">
+            <div class="output-label">Output</div>
+Hello, World!
+          </div>
+
+          <p>That's it. One line. No semicolons, no curly braces, no boilerplate. That's the Python difference.</p>
+
+          <h2 id="installing-python">Installing Python</h2>
+          <p>To get started, you need Python installed on your computer:</p>
+          <ol>
+            <li>Visit <strong>python.org</strong> and download the latest version (Python 3.x)</li>
+            <li>Run the installer — check <strong>"Add Python to PATH"</strong> during setup</li>
+            <li>Open a terminal and type <code>python --version</code> to confirm</li>
+          </ol>
+
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <div class="callout-body">
+              <strong>Tip</strong>
+              <p>If you want to start immediately without installing anything, try <strong>python.org/shell</strong> or Google Colab for a browser-based Python environment.</p>
+            </div>
+          </div>
+
+          <h2 id="running-python">Running Python Code</h2>
+          <p>There are two main ways to run Python:</p>
+
+          <h3>Interactive Mode</h3>
+          <p>Open a terminal and type <code>python</code> to enter the interactive shell (REPL). Type code and see results instantly — great for experiments.</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Shell</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre>$ python
+>>> <span class="num">2</span> + <span class="num">2</span>
+<span class="num">4</span>
+>>> <span class="fn">print</span>(<span class="str">"It works!"</span>)
+It works!</pre>
+          </div>
+
+          <h3>Script Mode</h3>
+          <p>Save your code in a <code>.py</code> file and run it from the terminal:</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Shell</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre>$ python my_script.py</pre>
+          </div>
+
+          <h2 id="comments">Comments in Python</h2>
+          <p>Comments are lines the Python interpreter ignores — they're notes for humans reading the code. Use <code>#</code> to write a comment:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><span class="cm"># This is a comment — Python ignores it</span>
+<span class="fn">print</span>(<span class="str">"This line runs"</span>)  <span class="cm"># Inline comment</span>
+
+<span class="cm"># Multi-line comments use multiple # symbols</span>
+<span class="cm"># or triple-quoted strings (used as docstrings)</span>
+<span class="kw">"""</span>
+<span class="str">This is a multi-line string
+often used for documentation</span>
+<span class="kw">"""</span></pre>
+          </div>
+
+          <div class="callout warning">
+            <span class="callout-icon">⚠️</span>
+            <div class="callout-body">
+              <strong>Common Mistake</strong>
+              <p>Don't confuse comments with code! Anything after <code>#</code> on a line is completely ignored by Python.</p>
+            </div>
+          </div>
+
+          <div class="doc-nav">
+            <span class="doc-nav-btn prev" style="opacity:0.4;cursor:default;">
+              <div class="doc-nav-direction">← Previous</div>
+              <div class="doc-nav-title">Home</div>
+            </span>
+            <a href="#" class="doc-nav-btn next" onclick="showPage('variables');return false;">
+              <div class="doc-nav-direction">Next →</div>
+              <div class="doc-nav-title">Variables</div>
+            </a>
+          </div>
+        </article>
+
+        <aside class="toc-sidebar">
+          <div class="toc-title">On this page</div>
+          <a href="#what-is-python" class="toc-link">What is Python?</a>
+          <a href="#why-python" class="toc-link">Why choose Python?</a>
+          <a href="#your-first-program" class="toc-link">Your First Program</a>
+          <a href="#installing-python" class="toc-link">Installing Python</a>
+          <a href="#running-python" class="toc-link">Running Python Code</a>
+          <a href="#comments" class="toc-link">Comments</a>
+        </aside>
+      </div>
+    </div>
+
+
+    <!-- ================================================
+         VARIABLES PAGE
+    ================================================ -->
+    <div class="page" id="page-variables">
+      <div class="docs-page-inner">
+        <article class="docs-content">
+          <div class="breadcrumb">
+            <a href="#" onclick="showPage('home');return false;">Home</a> ›
+            <span>Getting Started</span> ›
+            <span>Variables</span>
+          </div>
+          <h1>Variables</h1>
+          <div class="doc-meta">
+            <span class="doc-badge badge-beginner">Beginner</span>
+            <span class="doc-readtime">⏱ ~7 min read</span>
+          </div>
+
+          <p>A variable is a named container that holds a value. Think of it like a labelled box — you give it a name, put something inside, and refer to it by that name later. Variables are the most fundamental building block of any program.</p>
+
+          <h2 id="creating-variables">Creating Variables</h2>
+          <p>In Python, you don't need to declare a variable's type beforehand. Just write the name, an equals sign, and the value:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre>name = <span class="str">"Alice"</span>
+age = <span class="num">30</span>
+height = <span class="num">5.7</span>
+is_student = <span class="kw">True</span>
+
+<span class="fn">print</span>(name)      <span class="cm"># Alice</span>
+<span class="fn">print</span>(age)       <span class="cm"># 30</span>
+<span class="fn">print</span>(height)    <span class="cm"># 5.7</span>
+<span class="fn">print</span>(is_student) <span class="cm"># True</span></pre>
+          </div>
+          <div class="output-block">
+            <div class="output-label">Output</div>
+Alice
+30
+5.7
+True
+          </div>
+
+          <h2 id="naming-rules">Naming Rules</h2>
+          <p>Variable names in Python must follow these rules:</p>
+          <table class="syntax-table">
+            <tr><th>Rule</th><th>Example ✅</th><th>Example ❌</th></tr>
+            <tr><td>Start with a letter or underscore</td><td><code>_name</code>, <code>age</code></td><td><code>1name</code></td></tr>
+            <tr><td>Letters, numbers, and underscores only</td><td><code>user_age</code></td><td><code>user-age</code></td></tr>
+            <tr><td>Case-sensitive</td><td><code>score</code> ≠ <code>Score</code></td><td>—</td></tr>
+            <tr><td>Not a reserved keyword</td><td><code>value</code></td><td><code>for</code>, <code>if</code></td></tr>
+          </table>
+
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <div class="callout-body">
+              <strong>Convention: snake_case</strong>
+              <p>Python developers use <code>snake_case</code> for variable names — all lowercase with underscores between words. Example: <code>user_name</code>, <code>total_score</code>, <code>is_active</code>.</p>
+            </div>
+          </div>
+
+          <h2 id="multiple-assignment">Multiple Assignment</h2>
+          <p>Python lets you assign multiple variables at once — a handy shortcut:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><span class="cm"># Assign the same value to multiple variables</span>
+x = y = z = <span class="num">0</span>
+<span class="fn">print</span>(x, y, z)   <span class="cm"># 0 0 0</span>
+
+<span class="cm"># Assign different values in one line</span>
+first, last, age = <span class="str">"Ada"</span>, <span class="str">"Lovelace"</span>, <span class="num">36</span>
+<span class="fn">print</span>(first, last, age)  <span class="cm"># Ada Lovelace 36</span>
+
+<span class="cm"># Swap two variables (Python's elegant trick)</span>
+a, b = <span class="num">10</span>, <span class="num">20</span>
+a, b = b, a
+<span class="fn">print</span>(a, b)  <span class="cm"># 20 10</span></pre>
+          </div>
+
+          <h2 id="dynamic-typing">Dynamic Typing</h2>
+          <p>Python is <strong>dynamically typed</strong> — a variable can hold any type of value, and you can reassign it to a different type at any time:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre>x = <span class="num">42</span>           <span class="cm"># x is an integer</span>
+<span class="fn">print</span>(<span class="fn">type</span>(x))   <span class="cm"># &lt;class 'int'&gt;</span>
+
+x = <span class="str">"hello"</span>      <span class="cm"># now x is a string</span>
+<span class="fn">print</span>(<span class="fn">type</span>(x))   <span class="cm"># &lt;class 'str'&gt;</span>
+
+x = <span class="num">3.14</span>         <span class="cm"># now x is a float</span>
+<span class="fn">print</span>(<span class="fn">type</span>(x))   <span class="cm"># &lt;class 'float'&gt;</span></pre>
+          </div>
+
+          <div class="callout warning">
+            <span class="callout-icon">⚠️</span>
+            <div class="callout-body">
+              <strong>Be Careful</strong>
+              <p>Dynamic typing is flexible, but reassigning a variable to a completely different type mid-program can make code confusing. Use clear names and be consistent.</p>
+            </div>
+          </div>
+
+          <h2 id="constants">Constants</h2>
+          <p>Python doesn't have a built-in constant keyword, but by convention, variables written in <strong>ALL_CAPS</strong> are treated as constants — values that shouldn't change:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre>PI = <span class="num">3.14159</span>
+MAX_USERS = <span class="num">1000</span>
+APP_NAME = <span class="str">"PyLearn"</span>
+
+<span class="cm"># Python won't stop you from changing these, but</span>
+<span class="cm"># the convention signals "don't change this value".</span></pre>
+          </div>
+
+          <h2 id="best-practices">Best Practices</h2>
+          <ul>
+            <li>Use <strong>descriptive names</strong> — <code>user_age</code> beats <code>ua</code> every time</li>
+            <li>Keep names lowercase with underscores (<code>snake_case</code>)</li>
+            <li>Constants in <code>ALL_CAPS</code></li>
+            <li>Avoid single-letter names except for loop counters (<code>i</code>, <code>j</code>)</li>
+            <li>Don't shadow Python built-ins: avoid names like <code>list</code>, <code>str</code>, <code>type</code></li>
+          </ul>
+
+          <div class="doc-nav">
+            <a href="#" class="doc-nav-btn prev" onclick="showPage('intro');return false;">
+              <div class="doc-nav-direction">← Previous</div>
+              <div class="doc-nav-title">Introduction</div>
+            </a>
+            <a href="#" class="doc-nav-btn next" onclick="showPage('datatypes');return false;">
+              <div class="doc-nav-direction">Next →</div>
+              <div class="doc-nav-title">Data Types</div>
+            </a>
+          </div>
+        </article>
+
+        <aside class="toc-sidebar">
+          <div class="toc-title">On this page</div>
+          <a href="#creating-variables" class="toc-link">Creating Variables</a>
+          <a href="#naming-rules" class="toc-link">Naming Rules</a>
+          <a href="#multiple-assignment" class="toc-link">Multiple Assignment</a>
+          <a href="#dynamic-typing" class="toc-link">Dynamic Typing</a>
+          <a href="#constants" class="toc-link">Constants</a>
+          <a href="#best-practices" class="toc-link">Best Practices</a>
+        </aside>
+      </div>
+    </div>
+
+
+    <!-- ================================================
+         DATA TYPES PAGE
+    ================================================ -->
+    <div class="page" id="page-datatypes">
+      <div class="docs-page-inner">
+        <article class="docs-content">
+          <div class="breadcrumb">
+            <a href="#" onclick="showPage('home');return false;">Home</a> ›
+            <span>Core Concepts</span> ›
+            <span>Data Types</span>
+          </div>
+          <h1>Data Types</h1>
+          <div class="doc-meta">
+            <span class="doc-badge badge-beginner">Beginner</span>
+            <span class="doc-readtime">⏱ ~10 min read</span>
+          </div>
+
+          <p>Every value in Python has a type — a classification that tells Python what kind of data it is and what operations are allowed on it. Understanding types is foundational to writing correct, efficient Python code.</p>
+
+          <h2 id="built-in-types">Built-in Types Overview</h2>
+          <table class="syntax-table">
+            <tr><th>Type</th><th>Keyword</th><th>Example</th><th>Description</th></tr>
+            <tr><td>Integer</td><td><code>int</code></td><td><code>42</code></td><td>Whole numbers</td></tr>
+            <tr><td>Float</td><td><code>float</code></td><td><code>3.14</code></td><td>Decimal numbers</td></tr>
+            <tr><td>String</td><td><code>str</code></td><td><code>"hello"</code></td><td>Text</td></tr>
+            <tr><td>Boolean</td><td><code>bool</code></td><td><code>True</code></td><td>True or False</td></tr>
+            <tr><td>List</td><td><code>list</code></td><td><code>[1,2,3]</code></td><td>Ordered, mutable</td></tr>
+            <tr><td>Tuple</td><td><code>tuple</code></td><td><code>(1,2,3)</code></td><td>Ordered, immutable</td></tr>
+            <tr><td>Dictionary</td><td><code>dict</code></td><td><code>{"a":1}</code></td><td>Key-value pairs</td></tr>
+            <tr><td>Set</td><td><code>set</code></td><td><code>{1,2,3}</code></td><td>Unique, unordered</td></tr>
+            <tr><td>None</td><td><code>NoneType</code></td><td><code>None</code></td><td>Absence of value</td></tr>
+          </table>
+
+          <h2 id="numbers">Numbers</h2>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><span class="cm"># Integers — no size limit in Python!</span>
+x = <span class="num">42</span>
+big = <span class="num">1_000_000</span>   <span class="cm"># underscores for readability</span>
+
+<span class="cm"># Floats</span>
+pi = <span class="num">3.14159</span>
+scientific = <span class="num">1.5e10</span>  <span class="cm"># 15,000,000,000</span>
+
+<span class="cm"># Complex numbers</span>
+z = <span class="num">3</span> + <span class="num">4</span>j
+
+<span class="fn">print</span>(<span class="fn">type</span>(x))   <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(pi))  <span class="cm"># &lt;class 'float'&gt;</span></pre>
+          </div>
+
+          <h2 id="strings">Strings</h2>
+          <p>Strings are sequences of characters enclosed in single <code>'</code> or double <code>"</code> quotes. Python strings are immutable — you can't change a character in place.</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre>greeting = <span class="str">"Hello, World!"</span>
+name = <span class="str">'Python'</span>
+
+<span class="cm"># f-strings — the modern way to embed values</span>
+age = <span class="num">30</span>
+message = <span class="str">f"I am {age} years old"</span>
+<span class="fn">print</span>(message)  <span class="cm"># I am 30 years old</span>
+
+<span class="cm"># Common string methods</span>
+<span class="fn">print</span>(greeting.<span class="fn">upper</span>())   <span class="cm"># HELLO, WORLD!</span>
+<span class="fn">print</span>(greeting.<span class="fn">lower</span>())   <span class="cm"># hello, world!</span>
+<span class="fn">print</span>(greeting.<span class="fn">split</span>(<span class="str">","</span>)) <span class="cm"># ['Hello', ' World!']</span>
+<span class="fn">print</span>(<span class="fn">len</span>(greeting))       <span class="cm"># 13</span></pre>
+          </div>
+
+          <h2 id="lists">Lists</h2>
+          <p>Lists are ordered, changeable collections that can hold items of any type — including other lists.</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre>fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
+
+<span class="cm"># Indexing (0-based)</span>
+<span class="fn">print</span>(fruits[<span class="num">0</span>])   <span class="cm"># apple</span>
+<span class="fn">print</span>(fruits[-<span class="num">1</span>])  <span class="cm"># cherry (last item)</span>
+
+<span class="cm"># Modifying</span>
+fruits.<span class="fn">append</span>(<span class="str">"date"</span>)    <span class="cm"># add to end</span>
+fruits.<span class="fn">insert</span>(<span class="num">1</span>, <span class="str">"avocado"</span>) <span class="cm"># insert at index</span>
+fruits.<span class="fn">remove</span>(<span class="str">"banana"</span>)  <span class="cm"># remove by value</span>
+
+<span class="fn">print</span>(fruits)
+<span class="cm"># ['apple', 'avocado', 'cherry', 'date']</span></pre>
+          </div>
+
+          <h2 id="dicts">Dictionaries</h2>
+          <p>Dictionaries store data as <strong>key-value pairs</strong> — like a real dictionary where words (keys) map to definitions (values).</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre>person = {
+    <span class="str">"name"</span>: <span class="str">"Alice"</span>,
+    <span class="str">"age"</span>: <span class="num">30</span>,
+    <span class="str">"city"</span>: <span class="str">"London"</span>
+}
+
+<span class="fn">print</span>(person[<span class="str">"name"</span>])       <span class="cm"># Alice</span>
+<span class="fn">print</span>(person.<span class="fn">get</span>(<span class="str">"age"</span>))    <span class="cm"># 30</span>
+
+<span class="cm"># Add or update</span>
+person[<span class="str">"email"</span>] = <span class="str">"alice@example.com"</span>
+
+<span class="cm"># Loop through</span>
+<span class="kw">for</span> key, value <span class="kw">in</span> person.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="str">f"{key}: {value}"</span>)</pre>
+          </div>
+
+          <div class="callout danger">
+            <span class="callout-icon">🚫</span>
+            <div class="callout-body">
+              <strong>Common Mistake</strong>
+              <p>Accessing a dict key that doesn't exist raises a <code>KeyError</code>. Use <code>.get(key)</code> to safely get a value, returning <code>None</code> instead of crashing.</p>
+            </div>
+          </div>
+
+          <div class="doc-nav">
+            <a href="#" class="doc-nav-btn prev" onclick="showPage('variables');return false;">
+              <div class="doc-nav-direction">← Previous</div>
+              <div class="doc-nav-title">Variables</div>
+            </a>
+            <a href="#" class="doc-nav-btn next" onclick="showPage('functions');return false;">
+              <div class="doc-nav-direction">Next →</div>
+              <div class="doc-nav-title">Functions</div>
+            </a>
+          </div>
+        </article>
+
+        <aside class="toc-sidebar">
+          <div class="toc-title">On this page</div>
+          <a href="#built-in-types" class="toc-link">Overview</a>
+          <a href="#numbers" class="toc-link">Numbers</a>
+          <a href="#strings" class="toc-link">Strings</a>
+          <a href="#lists" class="toc-link">Lists</a>
+          <a href="#dicts" class="toc-link">Dictionaries</a>
+        </aside>
+      </div>
+    </div>
+
+
+    <!-- ================================================
+         FUNCTIONS PAGE
+    ================================================ -->
+    <div class="page" id="page-functions">
+      <div class="docs-page-inner">
+        <article class="docs-content">
+          <div class="breadcrumb">
+            <a href="#" onclick="showPage('home');return false;">Home</a> ›
+            <span>Core Concepts</span> ›
+            <span>Functions</span>
+          </div>
+          <h1>Functions</h1>
+          <div class="doc-meta">
+            <span class="doc-badge badge-beginner">Beginner</span>
+            <span class="doc-readtime">⏱ ~12 min read</span>
+          </div>
+
+          <p>Functions are reusable blocks of code that perform a specific task. Instead of writing the same logic multiple times, you define it once and call it whenever needed. Functions are the building blocks of clean, maintainable programs.</p>
+
+          <h2 id="defining-functions">Defining a Function</h2>
+          <p>Use the <code>def</code> keyword, followed by the function name, parentheses, and a colon. The function body is indented:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><span class="kw">def</span> <span class="fn">say_hello</span>():
+    <span class="fn">print</span>(<span class="str">"Hello there!"</span>)
+
+<span class="cm"># Call the function</span>
+<span class="fn">say_hello</span>()  <span class="cm"># Hello there!</span></pre>
+          </div>
+
+          <h2 id="parameters">Parameters &amp; Arguments</h2>
+          <p>Functions can accept input values called <strong>parameters</strong>:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><span class="kw">def</span> <span class="fn">greet</span>(name, greeting=<span class="str">"Hello"</span>):
+    <span class="fn">print</span>(<span class="str">f"{greeting}, {name}!"</span>)
+
+<span class="fn">greet</span>(<span class="str">"Alice"</span>)              <span class="cm"># Hello, Alice!</span>
+<span class="fn">greet</span>(<span class="str">"Bob"</span>, <span class="str">"Hey"</span>)         <span class="cm"># Hey, Bob!</span>
+<span class="fn">greet</span>(greeting=<span class="str">"Hi"</span>, name=<span class="str">"Charlie"</span>)  <span class="cm"># Hi, Charlie!</span></pre>
+          </div>
+
+          <h2 id="return-values">Return Values</h2>
+          <p>Functions return results using the <code>return</code> keyword. A function without a <code>return</code> implicitly returns <code>None</code>.</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><span class="kw">def</span> <span class="fn">add</span>(a, b):
+    <span class="kw">return</span> a + b
+
+<span class="kw">def</span> <span class="fn">min_max</span>(numbers):
+    <span class="kw">return</span> <span class="fn">min</span>(numbers), <span class="fn">max</span>(numbers)  <span class="cm"># return multiple values!</span>
+
+result = <span class="fn">add</span>(<span class="num">3</span>, <span class="num">7</span>)
+<span class="fn">print</span>(result)  <span class="cm"># 10</span>
+
+low, high = <span class="fn">min_max</span>([<span class="num">5</span>, <span class="num">1</span>, <span class="num">9</span>, <span class="num">3</span>])
+<span class="fn">print</span>(low, high)  <span class="cm"># 1 9</span></pre>
+          </div>
+
+          <h2 id="lambda">Lambda Functions</h2>
+          <p>Lambda functions are compact, anonymous functions defined in a single expression — perfect for short-lived operations:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">Python</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><span class="cm"># Regular function</span>
+<span class="kw">def</span> <span class="fn">square</span>(x):
+    <span class="kw">return</span> x ** <span class="num">2</span>
+
+<span class="cm"># Equivalent lambda</span>
+square = <span class="kw">lambda</span> x: x ** <span class="num">2</span>
+
+<span class="fn">print</span>(<span class="fn">square</span>(<span class="num">5</span>))  <span class="cm"># 25</span>
+
+<span class="cm"># Lambdas shine in sorting and filtering</span>
+names = [<span class="str">"Charlie"</span>, <span class="str">"Alice"</span>, <span class="str">"Bob"</span>]
+names.<span class="fn">sort</span>(key=<span class="kw">lambda</span> n: <span class="fn">len</span>(n))
+<span class="fn">print</span>(names)  <span class="cm"># ['Bob', 'Alice', 'Charlie']</span></pre>
+          </div>
+
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <div class="callout-body">
+              <strong>When to use lambda</strong>
+              <p>Use lambdas for simple, throwaway functions. For anything more than one expression, define a proper <code>def</code> function — it's clearer and easier to test.</p>
+            </div>
+          </div>
+
+          <div class="doc-nav">
+            <a href="#" class="doc-nav-btn prev" onclick="showPage('datatypes');return false;">
+              <div class="doc-nav-direction">← Previous</div>
+              <div class="doc-nav-title">Data Types</div>
+            </a>
+            <a href="#" class="doc-nav-btn next" onclick="showPage('oop');return false;">
+              <div class="doc-nav-direction">Next →</div>
+              <div class="doc-nav-title">OOP</div>
+            </a>
+          </div>
+        </article>
+
+        <aside class="toc-sidebar">
+          <div class="toc-title">On this page</div>
+          <a href="#defining-functions" class="toc-link">Defining Functions</a>
+          <a href="#parameters" class="toc-link">Parameters</a>
+          <a href="#return-values" class="toc-link">Return Values</a>
+          <a href="#lambda" class="toc-link">Lambda Functions</a>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Stub pages for remaining topics -->
+    <div class="page" id="page-operators"><div class="docs-page-inner"><article class="docs-content"><div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a> › <span>Core Concepts</span> › <span>Operators</span></div><h1>Operators</h1><div class="doc-meta"><span class="doc-badge badge-beginner">Beginner</span><span class="doc-readtime">⏱ ~8 min read</span></div><p>Operators perform operations on values and variables. Python has arithmetic, comparison, logical, assignment, bitwise, and membership operators.</p><h2 id="arithmetic">Arithmetic Operators</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre>a, b = <span class="num">10</span>, <span class="num">3</span>
+<span class="fn">print</span>(a + b)   <span class="cm"># 13 — addition</span>
+<span class="fn">print</span>(a - b)   <span class="cm"># 7  — subtraction</span>
+<span class="fn">print</span>(a * b)   <span class="cm"># 30 — multiplication</span>
+<span class="fn">print</span>(a / b)   <span class="cm"># 3.333... — division</span>
+<span class="fn">print</span>(a // b)  <span class="cm"># 3  — floor division</span>
+<span class="fn">print</span>(a % b)   <span class="cm"># 1  — modulus (remainder)</span>
+<span class="fn">print</span>(a ** b)  <span class="cm"># 1000 — exponentiation</span></pre></div><div class="doc-nav"><span class="doc-nav-btn prev" style="opacity:0.4;cursor:default;"><div class="doc-nav-direction">← Previous</div><div class="doc-nav-title">Data Types</div></span><a href="#" class="doc-nav-btn next" onclick="showPage('conditions');return false;"><div class="doc-nav-direction">Next →</div><div class="doc-nav-title">Conditions</div></a></div></article></div></div>
+
+    <div class="page" id="page-conditions"><div class="docs-page-inner"><article class="docs-content"><div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a> › <span>Core Concepts</span> › <span>Conditions</span></div><h1>Conditions</h1><div class="doc-meta"><span class="doc-badge badge-beginner">Beginner</span><span class="doc-readtime">⏱ ~8 min read</span></div><p>Conditional statements let your program make decisions — running different blocks of code depending on whether a condition is true or false.</p><h2 id="if-else">if / elif / else</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre>score = <span class="num">75</span>
+
+<span class="kw">if</span> score >= <span class="num">90</span>:
+    <span class="fn">print</span>(<span class="str">"Grade: A"</span>)
+<span class="kw">elif</span> score >= <span class="num">75</span>:
+    <span class="fn">print</span>(<span class="str">"Grade: B"</span>)
+<span class="kw">elif</span> score >= <span class="num">60</span>:
+    <span class="fn">print</span>(<span class="str">"Grade: C"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Grade: F"</span>)
+
+<span class="cm"># Output: Grade: B</span></pre></div><div class="doc-nav"><a href="#" class="doc-nav-btn prev" onclick="showPage('operators');return false;"><div class="doc-nav-direction">← Previous</div><div class="doc-nav-title">Operators</div></a><a href="#" class="doc-nav-btn next" onclick="showPage('loops');return false;"><div class="doc-nav-direction">Next →</div><div class="doc-nav-title">Loops</div></a></div></article></div></div>
+
+    <div class="page" id="page-loops"><div class="docs-page-inner"><article class="docs-content"><div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a> › <span>Core Concepts</span> › <span>Loops</span></div><h1>Loops</h1><div class="doc-meta"><span class="doc-badge badge-beginner">Beginner</span><span class="doc-readtime">⏱ ~10 min read</span></div><p>Loops let you repeat a block of code multiple times. Python has two main loop types: <code>for</code> loops for iterating over sequences, and <code>while</code> loops for repeating while a condition is true.</p><h2 id="for-loop">for Loop</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="cm"># Loop over a list</span>
+fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
+<span class="kw">for</span> fruit <span class="kw">in</span> fruits:
+    <span class="fn">print</span>(fruit)
+
+<span class="cm"># Loop with range</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):
+    <span class="fn">print</span>(i)  <span class="cm"># 0, 1, 2, 3, 4</span>
+
+<span class="cm"># enumerate — get index and value</span>
+<span class="kw">for</span> idx, fruit <span class="kw">in</span> <span class="fn">enumerate</span>(fruits):
+    <span class="fn">print</span>(<span class="str">f"{idx}: {fruit}"</span>)</pre></div><h2 id="while-loop">while Loop</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre>count = <span class="num">0</span>
+<span class="kw">while</span> count < <span class="num">5</span>:
+    <span class="fn">print</span>(count)
+    count += <span class="num">1</span></pre></div><div class="doc-nav"><a href="#" class="doc-nav-btn prev" onclick="showPage('conditions');return false;"><div class="doc-nav-direction">← Previous</div><div class="doc-nav-title">Conditions</div></a><a href="#" class="doc-nav-btn next" onclick="showPage('functions');return false;"><div class="doc-nav-direction">Next →</div><div class="doc-nav-title">Functions</div></a></div></article></div></div>
+
+    <div class="page" id="page-oop"><div class="docs-page-inner"><article class="docs-content"><div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a> › <span>Intermediate</span> › <span>OOP</span></div><h1>Object-Oriented Programming</h1><div class="doc-meta"><span class="doc-badge badge-intermediate">Intermediate</span><span class="doc-readtime">⏱ ~15 min read</span></div><p>Object-Oriented Programming (OOP) organizes code around <strong>objects</strong> — bundles of data (attributes) and behavior (methods). Python is a fully object-oriented language, and understanding OOP unlocks powerful design patterns.</p><h2 id="classes">Classes and Objects</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="kw">class</span> <span class="cls">Dog</span>:
+    <span class="cm"># Class attribute (shared by all instances)</span>
+    species = <span class="str">"Canis familiaris"</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, age):
+        <span class="cm"># Instance attributes</span>
+        <span class="kw">self</span>.name = name
+        <span class="kw">self</span>.age = age
+
+    <span class="kw">def</span> <span class="fn">bark</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">f"{self.name} says: Woof!"</span>
+
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">f"Dog(name={self.name!r}, age={self.age})"</span>
+
+<span class="cm"># Create objects (instances)</span>
+buddy = <span class="cls">Dog</span>(<span class="str">"Buddy"</span>, <span class="num">3</span>)
+max_  = <span class="cls">Dog</span>(<span class="str">"Max"</span>, <span class="num">5</span>)
+
+<span class="fn">print</span>(buddy.<span class="fn">bark</span>())   <span class="cm"># Buddy says: Woof!</span>
+<span class="fn">print</span>(max_.name)      <span class="cm"># Max</span></pre></div><h2 id="inheritance">Inheritance</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="kw">class</span> <span class="cls">GuideDog</span>(<span class="cls">Dog</span>):  <span class="cm"># inherits from Dog</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, age, owner):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(name, age)  <span class="cm"># call parent __init__</span>
+        <span class="kw">self</span>.owner = owner
+
+    <span class="kw">def</span> <span class="fn">guide</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">f"{self.name} is guiding {self.owner}"</span>
+
+rex = <span class="cls">GuideDog</span>(<span class="str">"Rex"</span>, <span class="num">4</span>, <span class="str">"Alice"</span>)
+<span class="fn">print</span>(rex.<span class="fn">bark</span>())   <span class="cm"># inherited method</span>
+<span class="fn">print</span>(rex.<span class="fn">guide</span>())  <span class="cm"># Rex is guiding Alice</span></pre></div><div class="doc-nav"><a href="#" class="doc-nav-btn prev" onclick="showPage('functions');return false;"><div class="doc-nav-direction">← Previous</div><div class="doc-nav-title">Functions</div></a><a href="#" class="doc-nav-btn next" onclick="showPage('files');return false;"><div class="doc-nav-direction">Next →</div><div class="doc-nav-title">File Handling</div></a></div></article></div></div>
+
+    <div class="page" id="page-files"><div class="docs-page-inner"><article class="docs-content"><div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a> › <span>Intermediate</span> › <span>File Handling</span></div><h1>File Handling</h1><div class="doc-meta"><span class="doc-badge badge-intermediate">Intermediate</span><span class="doc-readtime">⏱ ~10 min read</span></div><p>Python makes it easy to read and write files. Working with files lets your programs save data, process documents, and interact with the filesystem.</p><h2 id="reading-files">Reading Files</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="cm"># The 'with' statement handles closing automatically</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"data.txt"</span>, <span class="str">"r"</span>) <span class="kw">as</span> f:
+    content = f.<span class="fn">read</span>()        <span class="cm"># read entire file</span>
+    <span class="fn">print</span>(content)
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"data.txt"</span>, <span class="str">"r"</span>) <span class="kw">as</span> f:
+    <span class="kw">for</span> line <span class="kw">in</span> f:             <span class="cm"># read line by line</span>
+        <span class="fn">print</span>(line.<span class="fn">strip</span>())</pre></div><h2 id="writing-files">Writing Files</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="kw">with</span> <span class="fn">open</span>(<span class="str">"output.txt"</span>, <span class="str">"w"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="str">"Hello, file!\n"</span>)
+
+<span class="cm"># Append to existing file</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"output.txt"</span>, <span class="str">"a"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="str">"Another line\n"</span>)</pre></div><div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong>Always use <code>with</code></strong><p>The <code>with open(...)</code> pattern ensures the file is properly closed even if an error occurs. Never leave files open manually.</p></div></div><div class="doc-nav"><a href="#" class="doc-nav-btn prev" onclick="showPage('oop');return false;"><div class="doc-nav-direction">← Previous</div><div class="doc-nav-title">OOP</div></a><a href="#" class="doc-nav-btn next" onclick="showPage('exceptions');return false;"><div class="doc-nav-direction">Next →</div><div class="doc-nav-title">Exception Handling</div></a></div></article></div></div>
+
+    <div class="page" id="page-exceptions"><div class="docs-page-inner"><article class="docs-content"><div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a> › <span>Intermediate</span> › <span>Exception Handling</span></div><h1>Exception Handling</h1><div class="doc-meta"><span class="doc-badge badge-intermediate">Intermediate</span><span class="doc-readtime">⏱ ~10 min read</span></div><p>Errors are inevitable in programming. Python's exception handling lets your program respond to errors gracefully instead of crashing.</p><h2 id="try-except">try / except</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="kw">try</span>:
+    result = <span class="num">10</span> / <span class="num">0</span>
+<span class="kw">except</span> <span class="cls">ZeroDivisionError</span>:
+    <span class="fn">print</span>(<span class="str">"Can't divide by zero!"</span>)
+
+<span class="kw">try</span>:
+    number = <span class="fn">int</span>(<span class="str">"not a number"</span>)
+<span class="kw">except</span> <span class="cls">ValueError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">f"Error: {e}"</span>)
+<span class="kw">finally</span>:
+    <span class="fn">print</span>(<span class="str">"This always runs"</span>)</pre></div><div class="doc-nav"><a href="#" class="doc-nav-btn prev" onclick="showPage('files');return false;"><div class="doc-nav-direction">← Previous</div><div class="doc-nav-title">File Handling</div></a><a href="#" class="doc-nav-btn next" onclick="showPage('modules');return false;"><div class="doc-nav-direction">Next →</div><div class="doc-nav-title">Modules</div></a></div></article></div></div>
+
+    <div class="page" id="page-modules"><div class="docs-page-inner"><article class="docs-content"><div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a> › <span>Intermediate</span> › <span>Modules &amp; Packages</span></div><h1>Modules &amp; Packages</h1><div class="doc-meta"><span class="doc-badge badge-intermediate">Intermediate</span><span class="doc-readtime">⏱ ~10 min read</span></div><p>Modules are Python files containing reusable code. Packages are directories of modules. Python's standard library has hundreds of modules for common tasks.</p><h2 id="importing">Importing Modules</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="kw">import</span> math
+<span class="fn">print</span>(math.<span class="fn">sqrt</span>(<span class="num">16</span>))   <span class="cm"># 4.0</span>
+<span class="fn">print</span>(math.pi)          <span class="cm"># 3.14159...</span>
+
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+now = datetime.<span class="fn">now</span>()
+<span class="fn">print</span>(now.<span class="fn">strftime</span>(<span class="str">"%Y-%m-%d"</span>))
+
+<span class="kw">import</span> random
+<span class="fn">print</span>(random.<span class="fn">randint</span>(<span class="num">1</span>, <span class="num">100</span>))  <span class="cm"># random number 1–100</span></pre></div><div class="doc-nav"><a href="#" class="doc-nav-btn prev" onclick="showPage('exceptions');return false;"><div class="doc-nav-direction">← Previous</div><div class="doc-nav-title">Exception Handling</div></a><a href="#" class="doc-nav-btn next" onclick="showPage('advanced');return false;"><div class="doc-nav-direction">Next →</div><div class="doc-nav-title">Advanced Python</div></a></div></article></div></div>
+
+    <div class="page" id="page-advanced"><div class="docs-page-inner"><article class="docs-content"><div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a> › <span>Advanced</span> › <span>Advanced Python</span></div><h1>Advanced Python</h1><div class="doc-meta"><span class="doc-badge badge-intermediate">Intermediate</span><span class="doc-readtime">⏱ ~20 min read</span></div><p>Advanced Python features let you write more expressive, efficient, and Pythonic code. This section covers decorators, generators, comprehensions, and context managers.</p><h2 id="comprehensions">List Comprehensions</h2><p>A compact way to create lists from iterables — often replacing multi-line for loops in a single line:</p><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="cm"># Traditional way</span>
+squares = []
+<span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+    squares.<span class="fn">append</span>(x ** <span class="num">2</span>)
+
+<span class="cm"># List comprehension — same result</span>
+squares = [x ** <span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>)]
+
+<span class="cm"># With filtering</span>
+evens = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">20</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="cm"># Dict comprehension</span>
+word_lengths = {word: <span class="fn">len</span>(word) <span class="kw">for</span> word <span class="kw">in</span> [<span class="str">"apple"</span>, <span class="str">"fig"</span>, <span class="str">"banana"</span>]}</pre></div><h2 id="decorators">Decorators</h2><div class="code-block"><div class="code-block-header"><span class="code-lang">Python</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div><pre><span class="kw">def</span> <span class="fn">timer</span>(func):
+    <span class="kw">import</span> time
+    <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+        start = time.<span class="fn">time</span>()
+        result = <span class="fn">func</span>(*args, **kwargs)
+        <span class="fn">print</span>(<span class="str">f"Took {time.time() - start:.4f}s"</span>)
+        <span class="kw">return</span> result
+    <span class="kw">return</span> wrapper
+
+<span class="op">@</span><span class="fn">timer</span>
+<span class="kw">def</span> <span class="fn">slow_task</span>():
+    <span class="kw">import</span> time; time.<span class="fn">sleep</span>(<span class="num">0.1</span>)
+
+<span class="fn">slow_task</span>()  <span class="cm"># Took 0.1001s</span></pre></div><div class="doc-nav"><a href="#" class="doc-nav-btn prev" onclick="showPage('modules');return false;"><div class="doc-nav-direction">← Previous</div><div class="doc-nav-title">Modules</div></a><span class="doc-nav-btn next" style="opacity:0.4;cursor:default;"><div class="doc-nav-direction">Next →</div><div class="doc-nav-title">APIs & HTTP</div></span></div></article></div></div>
+
+  </main>
+</div>
+
+<!-- BACK TO TOP -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+// ============================================================
+// SEARCH DATA
+// ============================================================
+const searchIndex = [
+  { title: "Introduction to Python", page: "intro", path: "Getting Started / Introduction" },
+  { title: "Variables", page: "variables", path: "Getting Started / Variables" },
+  { title: "Data Types", page: "datatypes", path: "Core Concepts / Data Types" },
+  { title: "Operators", page: "operators", path: "Core Concepts / Operators" },
+  { title: "Conditions (if/elif/else)", page: "conditions", path: "Core Concepts / Conditions" },
+  { title: "Loops (for/while)", page: "loops", path: "Core Concepts / Loops" },
+  { title: "Functions", page: "functions", path: "Core Concepts / Functions" },
+  { title: "Lambda Functions", page: "functions", path: "Core Concepts / Functions" },
+  { title: "Object-Oriented Programming", page: "oop", path: "Intermediate / OOP" },
+  { title: "Classes and Objects", page: "oop", path: "Intermediate / OOP" },
+  { title: "Inheritance", page: "oop", path: "Intermediate / OOP" },
+  { title: "File Handling", page: "files", path: "Intermediate / File Handling" },
+  { title: "Exception Handling", page: "exceptions", path: "Intermediate / Exceptions" },
+  { title: "Modules & Packages", page: "modules", path: "Intermediate / Modules" },
+  { title: "Advanced Python", page: "advanced", path: "Advanced / Advanced Python" },
+  { title: "List Comprehensions", page: "advanced", path: "Advanced / Advanced Python" },
+  { title: "Decorators", page: "advanced", path: "Advanced / Advanced Python" },
+  { title: "Strings and f-strings", page: "datatypes", path: "Core Concepts / Data Types" },
+  { title: "Dictionaries", page: "datatypes", path: "Core Concepts / Data Types" },
+  { title: "snake_case naming", page: "variables", path: "Getting Started / Variables" },
+];
+
+// ============================================================
+// PAGE NAVIGATION
+// ============================================================
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) {
+    page.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  // Update active sidebar link
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes(`'${pageId}'`)) {
+      l.classList.add('active');
+    }
+  });
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+}
+
+// ============================================================
+// SIDEBAR TOGGLE (mobile)
+// ============================================================
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('visible');
+});
+document.getElementById('sidebar-overlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+});
+
+// ============================================================
+// COLLAPSIBLE SIDEBAR GROUPS
+// ============================================================
+function toggleGroup(toggle) {
+  toggle.classList.toggle('open');
+  const body = toggle.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ============================================================
+// DARK / LIGHT THEME
+// ============================================================
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeToggle.textContent = isDark ? '🌙' : '☀️';
+});
+
+// ============================================================
+// SCROLL PROGRESS BAR + BACK TO TOP
+// ============================================================
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.width = progress + '%';
+  const btn = document.getElementById('back-to-top');
+  btn.classList.toggle('visible', scrollTop > 300);
+});
+
+// ============================================================
+// COPY CODE BUTTONS
+// ============================================================
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText || pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+  });
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (!q) { searchResults.classList.remove('visible'); return; }
+  const hits = searchIndex.filter(item =>
+    item.title.toLowerCase().includes(q) || item.path.toLowerCase().includes(q)
+  ).slice(0, 8);
+  if (hits.length === 0) {
+    searchResults.innerHTML = '<div class="search-result-item"><div class="sr-title">No results found</div></div>';
+  } else {
+    searchResults.innerHTML = hits.map(h => `
+      <div class="search-result-item" onclick="showPage('${h.page}'); searchInput.value=''; searchResults.classList.remove('visible');">
+        <div class="sr-title">${h.title}</div>
+        <div class="sr-path">${h.path}</div>
+      </div>
+    `).join('');
+  }
+  searchResults.classList.add('visible');
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.topbar-search')) {
+    searchResults.classList.remove('visible');
+  }
+});
+
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { searchResults.classList.remove('visible'); searchInput.blur(); }
+});
+
+// ============================================================
+// TOC ACTIVE HIGHLIGHTING
+// ============================================================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      document.querySelectorAll('.toc-link').forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-60px 0px -70% 0px' });
+
+function observeHeadings() {
+  document.querySelectorAll('.docs-content h2[id], .docs-content h3[id]').forEach(h => observer.observe(h));
+}
+observeHeadings();
+
+// ============================================================
+// KEYBOARD SHORTCUT: / to focus search
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+});
+</script>
+</body>
+</html>
